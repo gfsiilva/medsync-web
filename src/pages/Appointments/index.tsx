@@ -69,6 +69,7 @@ export function Appointments() {
             {appointments.map(a => {
               const status = statusConfig[a.status] ?? { label: a.status, bg: '#F8FAFC', color: '#475569' }
               const dateObj = new Date(a.date)
+              const doctorName = a.doctor?.user?.name
               return (
                 <div key={a.id} style={{
                   background: '#fff', border: '0.5px solid #E2E8F0', borderRadius: '12px',
@@ -80,11 +81,11 @@ export function Appointments() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: '14px', fontWeight: 700, color: '#0F4C81', flexShrink: 0,
                     }}>
-                      {a.doctor?.user.name ? getInitials(a.doctor.user.name) : 'M'}
+                      {doctorName ? getInitials(doctorName) : 'M'}
                     </div>
                     <div>
                       <p style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', marginBottom: '3px' }}>
-                        {a.doctor?.user.name ?? 'Médico não informado'}
+                        {doctorName ?? 'Médico não informado'}
                       </p>
                       <p style={{ fontSize: '13px', color: '#64748B' }}>
                         {a.doctor?.specialty ?? 'Especialidade não informada'}
