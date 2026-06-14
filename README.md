@@ -244,5 +244,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 <p align="center">
   Developed by <a href="https://github.com/gfsiilva">Gustavo Silva</a>
   &nbsp;·&nbsp;
-  <a href="https://linkedin.com/in/gfsiilva">LinkedIn</a>
+  <a href="www.linkedin.com/in/gustavo-silva-81bb13231
+
+">LinkedIn</a>
 </p>
