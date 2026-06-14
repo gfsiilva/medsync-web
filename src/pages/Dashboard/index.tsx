@@ -7,14 +7,14 @@ interface Appointment {
   id: string
   date: string
   status: string
-  doctor?: { user: { name: string }; specialty?: string }
-  patient?: { user: { name: string } }
+  doctor?: { user?: { name?: string }; specialty?: string }
+  patient?: { user?: { name?: string } }
 }
 
 interface Doctor {
   id: string
   specialty: string
-  user: { name: string }
+  user?: { name?: string }
 }
 
 const statusConfig: Record<string, { label: string; bg: string; color: string }> = {
@@ -24,7 +24,7 @@ const statusConfig: Record<string, { label: string; bg: string; color: string }>
   COMPLETED: { label: 'Concluída',  bg: '#F8FAFC', color: '#475569' },
 }
 
-function getInitials(name: string) {
+function getInitials(name?: string) {
   if (!name) return '?'
   return name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()
 }
@@ -90,7 +90,7 @@ export function Dashboard() {
             {
               label: 'Próxima consulta',
               value: nextAppointment ? new Date(nextAppointment.date).toLocaleDateString('pt-BR') : '—',
-              sub: nextAppointment ? nextAppointment.doctor?.user.name ?? 'Médico' : 'Sem agendamento',
+              sub: nextAppointment ? (nextAppointment.doctor?.user?.name ?? 'Médico') : 'Sem agendamento',
               accent: '#1A7F5A',
               icon: (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A7F5A" strokeWidth="2" strokeLinecap="round">
@@ -162,6 +162,7 @@ export function Dashboard() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {appointments.map(a => {
                 const status = statusConfig[a.status] ?? { label: a.status, bg: '#F8FAFC', color: '#475569' }
+                const doctorName = a.doctor?.user?.name
                 return (
                   <div key={a.id} style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -177,11 +178,11 @@ export function Dashboard() {
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: '13px', fontWeight: 700, color: '#0F4C81', flexShrink: 0,
                       }}>
-                        {a.doctor?.user.name ? getInitials(a.doctor.user.name) : 'M'}
+                        {doctorName ? getInitials(doctorName) : 'M'}
                       </div>
                       <div>
                         <p style={{ fontSize: '14px', fontWeight: 600, color: '#0F172A', marginBottom: '2px' }}>
-                          {a.doctor?.user.name ?? 'Médico não informado'}
+                          {doctorName ?? 'Médico não informado'}
                         </p>
                         <p style={{ fontSize: '12px', color: '#94A3B8' }}>
                           {a.doctor?.specialty ?? 'Especialidade não informada'} · {new Date(a.date).toLocaleString('pt-BR')}
@@ -206,28 +207,31 @@ export function Dashboard() {
           <div style={{ background: '#fff', border: '0.5px solid #E2E8F0', borderRadius: '12px', padding: '24px', marginTop: '16px' }}>
             <h2 style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', marginBottom: '16px' }}>Médicos disponíveis</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-              {doctors.map(d => (
-                <div key={d.id} style={{
-                  padding: '16px', border: '0.5px solid #E2E8F0', borderRadius: '10px',
-                  display: 'flex', alignItems: 'center', gap: '12px',
-                }}>
-                  <div style={{
-                    width: '38px', height: '38px', borderRadius: '50%', background: '#F0FDF4',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '13px', fontWeight: 700, color: '#1A7F5A', flexShrink: 0,
+              {doctors.map(d => {
+                const doctorName = d.user?.name
+                return (
+                  <div key={d.id} style={{
+                    padding: '16px', border: '0.5px solid #E2E8F0', borderRadius: '10px',
+                    display: 'flex', alignItems: 'center', gap: '12px',
                   }}>
-                    {getInitials(d.user.name)}
+                    <div style={{
+                      width: '38px', height: '38px', borderRadius: '50%', background: '#F0FDF4',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '13px', fontWeight: 700, color: '#1A7F5A', flexShrink: 0,
+                    }}>
+                      {getInitials(doctorName)}
+                    </div>
+                    <div style={{ overflow: 'hidden' }}>
+                      <p style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {doctorName ?? 'Médico'}
+                      </p>
+                      <p style={{ fontSize: '12px', color: '#94A3B8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {d.specialty}
+                      </p>
+                    </div>
                   </div>
-                  <div style={{ overflow: 'hidden' }}>
-                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {d.user.name}
-                    </p>
-                    <p style={{ fontSize: '12px', color: '#94A3B8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {d.specialty}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}

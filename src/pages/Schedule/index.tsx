@@ -10,10 +10,11 @@ interface Doctor {
   id: string
   specialty: string
   crm: string
-  user: { name: string; email: string }
+  user?: { name?: string; email?: string }
 }
 
-function getInitials(name: string) {
+function getInitials(name?: string) {
+  if (!name) return '?'
   return name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()
 }
 
@@ -80,7 +81,7 @@ export function Schedule() {
               Consulta agendada!
             </h2>
             <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.6, marginBottom: '28px' }}>
-              Sua consulta com <strong>{doctor?.user.name}</strong> foi agendada com sucesso.
+              Sua consulta com <strong>{doctor?.user?.name ?? 'o médico selecionado'}</strong> foi agendada com sucesso.
             </p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
@@ -149,10 +150,10 @@ export function Schedule() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '16px', fontWeight: 700, color: '#0F4C81', flexShrink: 0,
                 }}>
-                  {getInitials(doctor.user.name)}
+                  {getInitials(doctor.user?.name)}
                 </div>
                 <div>
-                  <p style={{ fontSize: '16px', fontWeight: 600, color: '#0F172A', marginBottom: '4px' }}>{doctor.user.name}</p>
+                  <p style={{ fontSize: '16px', fontWeight: 600, color: '#0F172A', marginBottom: '4px' }}>{doctor.user?.name ?? 'Médico'}</p>
                   <p style={{ fontSize: '13px', color: '#64748B' }}>{doctor.specialty}</p>
                   {doctor.crm && <p style={{ fontSize: '12px', color: '#94A3B8', marginTop: '2px' }}>CRM: {doctor.crm}</p>}
                 </div>
